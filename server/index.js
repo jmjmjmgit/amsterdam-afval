@@ -4,12 +4,33 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
+const fs = require('fs');
 app.use(cors());
 app.use(express.json());
 
-// Use Render's persistent disk path if available, else local
-const isRender = process.env.NODE_ENV === 'production' || process.env.RENDER;
-const dbPath = isRender ? '/data/reports.sqlite' : path.join(__dirname, '..', 'data', 'reports.sqlite');
+// Determine database path
+let dbPath;
+const isRender = process.env.RENDER === 'true';
+
+if (isRender) {
+    // If deployed on Render, try to use persistent disk, fallback to memory or tmp
+    const renderDataDir = '/data';
+    if (fs.existsSync(renderDataDir)) {
+        dbPath = path.join(renderDataDir, 'reports.sqlite');
+    } else {
+        console.warn("Render /data directory not found. Data will not be persistent. Using /tmp.");
+        dbPath = '/tmp/reports.sqlite';
+    }
+} else {
+    // Local development
+    const localDataDir = path.join(__dirname, '..', 'data');
+    if (!fs.existsSync(localDataDir)) {
+        fs.mkdirSync(localDataDir, { recursive: true });
+    }
+    dbPath = path.join(localDataDir, 'reports.sqlite');
+}
+
+console.log(`Using database at: ${dbPath}`);
 const db = new sqlite3.Database(dbPath);
 
 // Initialize DB schema
