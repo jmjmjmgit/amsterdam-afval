@@ -7,7 +7,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const dbPath = path.join(__dirname, '..', 'data', 'reports.sqlite');
+// Use Render's persistent disk path if available, else local
+const isRender = process.env.NODE_ENV === 'production' || process.env.RENDER;
+const dbPath = isRender ? '/data/reports.sqlite' : path.join(__dirname, '..', 'data', 'reports.sqlite');
 const db = new sqlite3.Database(dbPath);
 
 // Initialize DB schema

@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: amsterdam-afval-api
+    env: node
+    buildCommand: npm install
+    startCommand: node server/index.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18.18.0
+    disk:
+      name: sqlite-data
+      mountPath: /data
+      sizeGB: 1
