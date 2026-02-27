@@ -411,3 +411,26 @@ body {
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 600px) {
+  .app-header {
+    width: calc(100vw - 32px);
+    left: 16px;
+    top: 16px;
+    padding: 16px;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .category-chip {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .leaflet-top.leaflet-left {
+    bottom: 16px;
+    right: 16px;
+  }
+}

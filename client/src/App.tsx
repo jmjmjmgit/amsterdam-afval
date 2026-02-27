@@ -62,11 +62,13 @@ function App() {
   const [selectedContainer, setSelectedContainer] = useState<Container | null>(null);
 
   useEffect(() => {
+    const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
     const fetchData = async () => {
       try {
         const [containersRes, statusRes] = await Promise.all([
           fetch('/containers.json'),
-          fetch('http://localhost:3001/api/status').catch(() => ({ ok: false, json: () => ({}) } as any))
+          fetch(`${API_BASE}/api/status`).catch(() => ({ ok: false, json: () => ({}) } as any))
         ]);
 
         if (containersRes.ok) {
@@ -90,7 +92,7 @@ function App() {
     // Poll for status updates every 30 seconds
     const interval = setInterval(async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/status');
+        const res = await fetch(`${API_BASE}/api/status`);
         if (res.ok) {
           const statuses = await res.json();
           setGlobalStatus(statuses);
